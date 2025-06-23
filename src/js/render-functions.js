@@ -11,7 +11,7 @@ const lightbox = new SimpleLightbox('.gallery a', {
         });
 
 function createGallery(images) {
-    gallery.insertAdjacentElement("beforeend", images.map(elem => `
+    gallery.insertAdjacentHTML("beforeend", images.map(elem => `
         <li class="gallery-item">
             <a class="gallery-link" href=${elem.largeImageURL}>
                 <img

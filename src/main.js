@@ -9,6 +9,7 @@ const queryCatcher = form.elements["search-text"];
 const loadMore = document.querySelector(".load-more");
 let pageCounter = 1;
 let queryStorage = '';
+const limit = 15;
 
 form.addEventListener("submit", handleSubmit);
 loadMore.addEventListener("click", handleClick);
@@ -28,7 +29,8 @@ async function handleSubmit(event) {
     hideLoadMoreButton();
     showLoader();
     try {
-        const images = await getImagesByQuery(queryStorage, pageCounter);
+        const {images, totalHits} = await getImagesByQuery(queryStorage, pageCounter);
+        const totalPages = Math.ceil(totalHits / limit);
         if(images.length === 0) {
             iziToast.error({
                 title: 'error',
@@ -37,6 +39,13 @@ async function handleSubmit(event) {
         } else {
             createGallery(images);
             showLoadMoreButton();
+            if(page >= totalPages) {
+                iziToast.warning({
+                    title: 'warning',
+                    message: "We're sorry, but you've reached the end of search results.",
+                });
+                hideLoadMoreButton();
+            }
         }
     } catch (error) {
         iziToast.error({
@@ -54,7 +63,8 @@ async function handleClick(event) {
     hideLoadMoreButton();
     showLoader();
     try {
-        const images = await getImagesByQuery(queryStorage, pageCounter);
+        const {images, totalHits} = await getImagesByQuery(queryStorage, pageCounter);
+        const totalPages = Math.ceil(totalHits / limit);
         if(images.length === 0) {
             iziToast.error({
                 title: 'error',
@@ -63,8 +73,15 @@ async function handleClick(event) {
         } else {
             createGallery(images);
             showLoadMoreButton();
+            if(page >= totalPages) {
+                iziToast.warning({
+                    title: 'warning',
+                    message: "We're sorry, but you've reached the end of search results.",
+                });
+                hideLoadMoreButton();
+            }
         }
-    } catch {
+    } catch (error) {
         iziToast.error({
             title: 'Error',
             message: 'failed to fetch images',

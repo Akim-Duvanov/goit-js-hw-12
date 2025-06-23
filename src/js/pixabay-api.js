@@ -1,10 +1,7 @@
 import axios from 'axios';
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
-import {hideLoadMoreButton} from './render-functions.js';
 export {getImagesByQuery};
-
-const limit = 15;
 
 async function getImagesByQuery(query, page) {
     const searchParams = new URLSearchParams({
@@ -19,7 +16,6 @@ async function getImagesByQuery(query, page) {
 
     try {
         const response = await axios.get(`https://pixabay.com/api/?${searchParams}`);
-        const totalPages = Math.ceil(response.data.totalHits / limit);
 		if(response.data.hits.length === 0) {
             iziToast.error({
                 title: 'error',
@@ -27,14 +23,9 @@ async function getImagesByQuery(query, page) {
             });
             return null;
         } else { 
-            if(page >= totalPages) {
-                iziToast.warning({
-                    title: 'warning',
-                    message: "We're sorry, but you've reached the end of search results.",
-                });
-                hideLoadMoreButton();
-            }
-            return response.data.hits;
+            const images = response.data.hits;
+            const totalHits = response.data.totalHits;
+            return { images, totalHits };
         } 
     } catch (error) {
         iziToast.error({
