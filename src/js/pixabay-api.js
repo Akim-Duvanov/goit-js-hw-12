@@ -11,7 +11,7 @@ async function getImagesByQuery(query, page) {
         orientation: 'horizontal',
         safesearch: 'true',
         page: page,
-        per_page: limit
+        per_page: 15
     });
 
     try {

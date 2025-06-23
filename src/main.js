@@ -39,7 +39,7 @@ async function handleSubmit(event) {
         } else {
             createGallery(images);
             showLoadMoreButton();
-            if(page >= totalPages) {
+            if(pageCounter >= totalPages) {
                 iziToast.warning({
                     title: 'warning',
                     message: "We're sorry, but you've reached the end of search results.",
@@ -73,7 +73,16 @@ async function handleClick(event) {
         } else {
             createGallery(images);
             showLoadMoreButton();
-            if(page >= totalPages) {
+
+            const firstCard = document.querySelector('.gallery-item');
+            if (firstCard) {
+            const cardHeight = firstCard.getBoundingClientRect().height;
+            window.scrollBy({
+                top: cardHeight * 2,
+                behavior: 'smooth',
+            });
+            }
+            if(pageCounter >= totalPages) {
                 iziToast.warning({
                     title: 'warning',
                     message: "We're sorry, but you've reached the end of search results.",
